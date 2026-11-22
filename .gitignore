@@ -1,0 +1,9 @@
+# Datos crudos generados (~1-2 GB) y segmentos compilados por Pinot
+workspace/rawdata/
+workspace/segments/
+
+# Python y archivos temporales del sistema
+__pycache__/
+*.py[cod]
+.DS_Store
+Thumbs.db

@@ -1,0 +1,32 @@
+{
+  "tableName": "security_events_exp1_OFFLINE",
+  "tableType": "OFFLINE",
+  "segmentsConfig": {
+    "timeColumnName": "timestamp_ms",
+    "schemaName": "security_events_exp1",
+    "replication": "1"
+  },
+  "tenants": {
+    "broker": "DefaultTenant",
+    "server": "DefaultTenant"
+  },
+  "tableIndexConfig": {
+    "loadMode": "MMAP",
+    "invertedIndexColumns": [
+      "event_type",
+      "severity",
+      "action"
+    ],
+    "createInvertedIndexDuringSegmentGeneration": true,
+    "bloomFilterConfigs": {
+      "src_ip": {
+        "fpp": 0.001,
+        "maxSizeInBytes": 1048576,
+        "loadOnHeap": false
+      }
+    },
+    "enableDefaultStarTree": false,
+    "enableDynamicStarTreeCreation": true
+  },
+  "metadata": {}
+}

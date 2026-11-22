@@ -1,0 +1,51 @@
+{
+  "schemaName": "security_events_exp1",
+  "dimensionFieldSpecs": [
+    {
+      "name": "src_ip",
+      "dataType": "STRING"
+    },
+    {
+      "name": "dst_ip",
+      "dataType": "STRING"
+    },
+    {
+      "name": "protocol",
+      "dataType": "STRING"
+    },
+    {
+      "name": "username",
+      "dataType": "STRING"
+    },
+    {
+      "name": "event_type",
+      "dataType": "STRING"
+    },
+    {
+      "name": "action",
+      "dataType": "STRING"
+    },
+    {
+      "name": "severity",
+      "dataType": "STRING"
+    }
+  ],
+  "metricFieldSpecs": [
+    {
+      "name": "dst_port",
+      "dataType": "INT"
+    },
+    {
+      "name": "bytes_transferred",
+      "dataType": "LONG"
+    }
+  ],
+  "dateTimeFieldSpecs": [
+    {
+      "name": "timestamp_ms",
+      "dataType": "TIMESTAMP",
+      "format": "1:MILLISECONDS:EPOCH",
+      "granularity": "1:MILLISECONDS"
+    }
+  ]
+}

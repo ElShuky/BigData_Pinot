@@ -1,0 +1,40 @@
+executionFrameworkSpec:
+  name: 'standalone'
+  segmentGenerationJobRunnerClassName: 'org.apache.pinot.plugin.ingestion.batch.standalone.SegmentGenerationJobRunner'
+  segmentTarPushJobRunnerClassName: 'org.apache.pinot.plugin.ingestion.batch.standalone.SegmentTarPushJobRunner'
+  segmentUriPushJobRunnerClassName: 'org.apache.pinot.plugin.ingestion.batch.standalone.SegmentUriPushJobRunner'
+
+jobType: SegmentCreationAndTarPush
+segmentCreationJobParallelism: 2
+
+inputDirURI: 'file:///workspace/rawdata/exp_dataset'
+includeFileNamePattern: 'glob:**/part_*.json'
+outputDirURI: 'file:///workspace/segments/exp1'
+overwriteOutput: true
+
+pinotFSSpecs:
+  - scheme: file
+    className: 'org.apache.pinot.spi.filesystem.LocalPinotFS'
+
+recordReaderSpec:
+  dataFormat: 'json'
+  className: 'org.apache.pinot.plugin.inputformat.json.JSONRecordReader'
+
+segmentNameGeneratorSpec:
+  type: simple
+  configs:
+    segment.name.prefix: 'security_events_exp1'
+    exclude.sequence.id: false
+
+tableSpec:
+  tableName: 'security_events_exp1'
+  schemaURI: 'http://localhost:9000/tables/security_events_exp1/schema'
+  tableConfigURI: 'http://localhost:9000/tables/security_events_exp1'
+
+pinotClusterSpecs:
+  - controllerURI: 'http://localhost:9000'
+
+pushJobSpec:
+  pushAttempts: 3
+  pushRetryIntervalMillis: 2000
+  pushParallelism: 1
