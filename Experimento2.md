@@ -4,7 +4,7 @@ Repositorio reproducible del **Grupo 7** (*Extracción y Gestión de Datos Masiv
 
 ---
 
-## Estructura del repositorio
+## Estructura del experimento 2 en el respositorio
 
 ```text
 BigData_Pinot/
