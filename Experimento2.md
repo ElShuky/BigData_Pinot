@@ -13,10 +13,11 @@ BigData_Pinot/
     ├── exp2_stress_producer.py                # Productor directo a Kafka (500, 2.500 y 10.000 ev/s)
     ├── exp2_monitor.py                        # Monitor en vivo (Freshness Lag, SQL GROUP BY, Segmentos y RAM)
     └── config/
-        ├── security_events_schema.json        # Esquema de la tabla security_events
-        ├── exp2_table_10k.json                # Config REALTIME con flush.threshold.rows = 10.000
-        ├── exp2_table_100k.json               # Config REALTIME con flush.threshold.rows = 100.000
-        └── exp2_table_500k.json               # Config REALTIME con flush.threshold.rows = 500.000
+        └── exp2/
+            ├── security_events_schema.json    # Esquema de la tabla security_events
+            ├── exp2_table_10k.json            # Config REALTIME con flush.threshold.rows = 10.000
+            ├── exp2_table_100k.json           # Config REALTIME con flush.threshold.rows = 100.000
+            └── exp2_table_500k.json           # Config REALTIME con flush.threshold.rows = 500.000
 ```
 
 ---
@@ -31,7 +32,7 @@ BigData_Pinot/
 
 ## Paso a paso para reproducir el Experimento 2
 
-Ejecuta todos los comandos desde la raíz del proyecto (`pinot_esqueleto/` o `BigData_Pinot/`). Se requieren **dos terminales abiertas** en paralelo para ejecutar el productor de carga y el monitor en tiempo real.
+Ejecuta todos los comandos desde la raíz del proyecto (`BigData_Pinot/`). Se requieren **dos terminales abiertas** en paralelo para ejecutar el productor de carga y el monitor en tiempo real.
 
 ### 1. Levantar el clúster desde limpio (ZooKeeper, Kafka y Pinot)
 
@@ -63,16 +64,16 @@ curl -s http://localhost:8099/health
 
 2. **Registrar el esquema `security_events`:**
    ```bash
-   curl -X POST -H "Content-Type: application/json" -d @workspace/config/security_events_schema.json http://localhost:9000/schemas
+   curl -X POST -H "Content-Type: application/json" -d @workspace/config/exp2/security_events_schema.json http://localhost:9000/schemas
    ```
 
 3. **Generar las variantes de configuración de tabla (`10k`, `100k` y `500k` filas de flush):**  
    *(Asegurando `stream.kafka.consumer.prop.auto.offset.reset: "largest"`, exigido por Pinot 1.2.0).*
    ```powershell
-   $fixed = (Get-Content -Raw workspace/config/exp2_table_100k.json) -replace '"latest"', '"largest"'
-   [System.IO.File]::WriteAllText("$PWD\workspace\config\exp2_table_100k.json", $fixed, (New-Object System.Text.UTF8Encoding $false))
-   [System.IO.File]::WriteAllText("$PWD\workspace\config\exp2_table_10k.json", ($fixed -replace '"100000"', '"10000"'), (New-Object System.Text.UTF8Encoding $false))
-   [System.IO.File]::WriteAllText("$PWD\workspace\config\exp2_table_500k.json", ($fixed -replace '"100000"', '"500000"'), (New-Object System.Text.UTF8Encoding $false))
+   $fixed = (Get-Content -Raw workspace/config/exp2/exp2_table_100k.json) -replace '"latest"', '"largest"'
+   [System.IO.File]::WriteAllText("$PWD\workspace\config\exp2\exp2_table_100k.json", $fixed, (New-Object System.Text.UTF8Encoding $false))
+   [System.IO.File]::WriteAllText("$PWD\workspace\config\exp2\exp2_table_10k.json", ($fixed -replace '"100000"', '"10000"'), (New-Object System.Text.UTF8Encoding $false))
+   [System.IO.File]::WriteAllText("$PWD\workspace\config\exp2\exp2_table_500k.json", ($fixed -replace '"100000"', '"500000"'), (New-Object System.Text.UTF8Encoding $false))
    ```
 
 ---
@@ -87,7 +88,7 @@ En cada corrida se sigue exactamente el mismo protocolo en dos terminales:
 #### Corrida C1 — Línea base (`500 ev/s` | Flush: `100.000` filas)
 - **Terminal A:**
   ```bash
-  curl -X POST -H "Content-Type: application/json" -d @workspace/config/exp2_table_100k.json http://localhost:9000/tables
+  curl -X POST -H "Content-Type: application/json" -d @workspace/config/exp2/exp2_table_100k.json http://localhost:9000/tables
   ```
 - **Terminal B:**
   ```bash
@@ -102,7 +103,7 @@ En cada corrida se sigue exactamente el mismo protocolo en dos terminales:
 - **Terminal A (resetear tabla):**
   ```bash
   curl -X DELETE "http://localhost:9000/tables/security_events?type=realtime"
-  curl -X POST -H "Content-Type: application/json" -d @workspace/config/exp2_table_100k.json http://localhost:9000/tables
+  curl -X POST -H "Content-Type: application/json" -d @workspace/config/exp2/exp2_table_100k.json http://localhost:9000/tables
   ```
 - **Terminal B:**
   ```bash
@@ -112,13 +113,12 @@ En cada corrida se sigue exactamente el mismo protocolo en dos terminales:
   ```bash
   python workspace/exp2_stress_producer.py 2500 25
   ```
-  >
 
 #### Corrida C3 — Estrés estándar (`10.000 ev/s` | Flush: `100.000` filas)
 - **Terminal A (resetear tabla):**
   ```bash
   curl -X DELETE "http://localhost:9000/tables/security_events?type=realtime"
-  curl -X POST -H "Content-Type: application/json" -d @workspace/config/exp2_table_100k.json http://localhost:9000/tables
+  curl -X POST -H "Content-Type: application/json" -d @workspace/config/exp2/exp2_table_100k.json http://localhost:9000/tables
   ```
 - **Terminal B:**
   ```bash
@@ -128,13 +128,13 @@ En cada corrida se sigue exactamente el mismo protocolo en dos terminales:
   ```bash
   python workspace/exp2_stress_producer.py 10000 25
   ```
-  > *Resultado esperado:* al cruzar 100.000 y 200.000 filas se disparan 2 commits de segmento y la latencia SQL salta transitoriamente de ~7 ms a ~19 ms
+> *Resultado esperado:* al cruzar 100.000 y 200.000 filas se disparan 2 commits de segmento y la latencia SQL salta transitoriamente de ~7 ms a ~19 ms
 
 #### Corrida C4 — Estrés con flush agresivo (`10.000 ev/s` | Flush: `10.000` filas)
 - **Terminal A (resetear tabla):**
   ```bash
   curl -X DELETE "http://localhost:9000/tables/security_events?type=realtime"
-  curl -X POST -H "Content-Type: application/json" -d @workspace/config/exp2_table_10k.json http://localhost:9000/tables
+  curl -X POST -H "Content-Type: application/json" -d @workspace/config/exp2/exp2_table_10k.json http://localhost:9000/tables
   ```
 - **Terminal B:**
   ```bash
@@ -144,13 +144,13 @@ En cada corrida se sigue exactamente el mismo protocolo en dos terminales:
   ```bash
   python workspace/exp2_stress_producer.py 10000 25
   ```
-  > *Resultado esperado:* ~1 cierre por segundo, generando 25 segmentos `[24 GOOD/ONLINE + 1 CONSUMING]` y mayor incremento de RAM).
+ > *Resultado esperado:* ~1 cierre por segundo, generando 25 segmentos `[24 GOOD/ONLINE + 1 CONSUMING]` y mayor incremento de RAM).
 
 #### Corrida C5 — Estrés con flush holgado (`10.000 ev/s` | Flush: `500.000` filas)
 - **Terminal A (resetear tabla):**
   ```bash
   curl -X DELETE "http://localhost:9000/tables/security_events?type=realtime"
-  curl -X POST -H "Content-Type: application/json" -d @workspace/config/exp2_table_500k.json http://localhost:9000/tables
+  curl -X POST -H "Content-Type: application/json" -d @workspace/config/exp2/exp2_table_500k.json http://localhost:9000/tables
   ```
 - **Terminal B:**
   ```bash
