@@ -2,7 +2,8 @@
 workspace/rawdata/
 workspace/segments/
 
-# Python y archivos temporales del sistema
+# Entorno virtual Python y archivos temporales del sistema
+.venv/
 __pycache__/
 *.py[cod]
 .DS_Store

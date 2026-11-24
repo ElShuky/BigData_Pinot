@@ -76,6 +76,20 @@ curl -s http://localhost:8099/health
    [System.IO.File]::WriteAllText("$PWD\workspace\config\exp2\exp2_table_500k.json", ($fixed -replace '"100000"', '"500000"'), (New-Object System.Text.UTF8Encoding $false))
    ```
 
+   **Equivalente en Linux con `sed`:**
+
+   ```bash
+   sed -i 's/"latest"/"largest"/g' workspace/config/exp2/exp2_table_100k.json
+
+   sed 's/"latest"/"largest"/g; s/"100000"/"10000"/g' \
+     workspace/config/exp2/exp2_table_100k.json \
+     > workspace/config/exp2/exp2_table_10k.json
+
+   sed 's/"latest"/"largest"/g; s/"100000"/"500000"/g' \
+     workspace/config/exp2/exp2_table_100k.json \
+     > workspace/config/exp2/exp2_table_500k.json
+   ```
+
 ---
 
 ### 3. Ejecutar las 5 corridas experimentales (C1 a C5)
