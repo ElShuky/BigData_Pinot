@@ -107,7 +107,7 @@ En cada corrida se sigue exactamente el mismo protocolo en dos terminales:
 #### Corrida C1 — Línea base (`500 ev/s` | Flush: `100.000` filas)
 - **Terminal A:**
   ```bash
-  curl -X POST -H "Content-Type: application/json" -d @workspace/config/exp2/exp2_table_100k.json http://localhost:9000/tables
+  curl.exe -X POST -H "Content-Type: application/json" -d @workspace/config/exp2/exp2_table_100k.json http://localhost:9000/tables
   ```
 - **Terminal B:**
   ```bash
@@ -121,8 +121,8 @@ En cada corrida se sigue exactamente el mismo protocolo en dos terminales:
 #### Corrida C2 — Carga media (`2.500 ev/s` | Flush: `100.000` filas)
 - **Terminal A (resetear tabla):**
   ```bash
-  curl -X DELETE "http://localhost:9000/tables/security_events?type=realtime"
-  curl -X POST -H "Content-Type: application/json" -d @workspace/config/exp2/exp2_table_100k.json http://localhost:9000/tables
+  curl.exe -X DELETE "http://localhost:9000/tables/security_events?type=realtime"
+  curl.exe -X POST -H "Content-Type: application/json" -d @workspace/config/exp2/exp2_table_100k.json http://localhost:9000/tables
   ```
 - **Terminal B:**
   ```bash
@@ -136,8 +136,8 @@ En cada corrida se sigue exactamente el mismo protocolo en dos terminales:
 #### Corrida C3 — Estrés estándar (`10.000 ev/s` | Flush: `100.000` filas)
 - **Terminal A (resetear tabla):**
   ```bash
-  curl -X DELETE "http://localhost:9000/tables/security_events?type=realtime"
-  curl -X POST -H "Content-Type: application/json" -d @workspace/config/exp2/exp2_table_100k.json http://localhost:9000/tables
+  curl.exe -X DELETE "http://localhost:9000/tables/security_events?type=realtime"
+  curl.exe -X POST -H "Content-Type: application/json" -d @workspace/config/exp2/exp2_table_100k.json http://localhost:9000/tables
   ```
 - **Terminal B:**
   ```bash
@@ -152,8 +152,8 @@ En cada corrida se sigue exactamente el mismo protocolo en dos terminales:
 #### Corrida C4 — Estrés con flush agresivo (`10.000 ev/s` | Flush: `10.000` filas)
 - **Terminal A (resetear tabla):**
   ```bash
-  curl -X DELETE "http://localhost:9000/tables/security_events?type=realtime"
-  curl -X POST -H "Content-Type: application/json" -d @workspace/config/exp2/exp2_table_10k.json http://localhost:9000/tables
+  curl.exe -X DELETE "http://localhost:9000/tables/security_events?type=realtime"
+  curl.exe -X POST -H "Content-Type: application/json" -d @workspace/config/exp2/exp2_table_10k.json http://localhost:9000/tables
   ```
 - **Terminal B:**
   ```bash
@@ -168,8 +168,8 @@ En cada corrida se sigue exactamente el mismo protocolo en dos terminales:
 #### Corrida C5 — Estrés con flush holgado (`10.000 ev/s` | Flush: `500.000` filas)
 - **Terminal A (resetear tabla):**
   ```bash
-  curl -X DELETE "http://localhost:9000/tables/security_events?type=realtime"
-  curl -X POST -H "Content-Type: application/json" -d @workspace/config/exp2/exp2_table_500k.json http://localhost:9000/tables
+  curl.exe -X DELETE "http://localhost:9000/tables/security_events?type=realtime"
+  curl.exe -X POST -H "Content-Type: application/json" -d @workspace/config/exp2/exp2_table_500k.json http://localhost:9000/tables
   ```
 - **Terminal B:**
   ```bash
