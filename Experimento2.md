@@ -69,7 +69,7 @@ curl.exe -s http://localhost:8099/health
 
 2. **Registrar el esquema `security_events`:**
    ```bash
-   curl -X POST -H "Content-Type: application/json" -d @workspace/config/exp2/security_events_schema.json http://localhost:9000/schemas
+   curl.exe -X POST -H "Content-Type: application/json" -d "@workspace/config/exp2/security_events_schema.json" http://localhost:9000/schemas
    ```
 
 3. **Generar las variantes de configuración de tabla (`10k`, `100k` y `500k` filas de flush):**  
