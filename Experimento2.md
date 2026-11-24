@@ -45,12 +45,17 @@ sleep 15
 docker compose up -d
 ```
 
+Si da error de puerto 9000 en uso, damos de baja el namenode
+```bash
+docker stop namenode
+```
+
 Espera ~30 segundos y verifica que los 5 contenedores estén activos (`Up`) y que Controller (`9000`) y Broker (`8099`) respondan `OK`:
 
 ```bash
 docker compose ps
-curl -s http://localhost:9000/health
-curl -s http://localhost:8099/health
+curl.exe -s http://localhost:9000/health
+curl.exe -s http://localhost:8099/health
 ```
 
 ---
